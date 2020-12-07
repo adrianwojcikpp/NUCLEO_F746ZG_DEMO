@@ -33,6 +33,9 @@
 #include "components.h"
 #include <stdio.h>
 #include <string.h>
+
+//#include "disp_garbage.c" // TODO: napisz tą bibliteke po ludzku
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -73,6 +76,11 @@ static float triac_firing_ang = 90;
 uint16_t adc_measurement[ADC_CHANNEL_NUMBER] = {0, 0};   // ADC register value
 uint32_t adc_voltage_mV[ADC_CHANNEL_NUMBER] = {0, 0};
 
+// DAC data
+uint16_t sine_wave[] = {
+#include "sine_data.csv"
+};
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -112,6 +120,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* Dimmer (LAMP) handling */
   if(htim->Instance == hlamp1.Timer->Instance)
     LAMP_TriacFiring(&hlamp1);
+  else if(htim->Instance == TIM7)
+	DISP_ROUTINE(&hdisp1);
 }
 
 /**
@@ -174,7 +184,12 @@ int main(void)
   MX_SPI4_Init();
   MX_ADC1_Init();
   MX_DAC_Init();
+  MX_TIM6_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
+
+  HAL_TIM_Base_Start(&htim6);
+  HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, (uint32_t*)sine_wave, 100, DAC_ALIGN_12B_R) ;
 
   LCD_Init(&hlcd1);
   LED_RGB_Init(&hledrgb1);
@@ -184,6 +199,9 @@ int main(void)
   BH1750_Init(&hbh1750_2);
   BMP280_Init(&bmp280_1);
   BMP280_Init(&bmp280_2);
+
+  HAL_TIM_Base_Start_IT(&htim7);
+  DISP_EnableDecimalPoint(&hdisp1, DISP_DP_4);
 
   /* USER CODE END 2 */
 
@@ -303,6 +321,9 @@ int main(void)
 	LCD_printStr(&hlcd1, lcd_buffer);
 	LCD_SetCursor(&hlcd1, 1, 0);
 	LCD_printf(&hlcd1, "ENC: %03d", ENC_GetCounter(&henc1));
+
+	/* DISP *******************************************************/
+	DISP_printDecUInt(&hdisp1, (int)adc_voltage_mV[ADC_POT2]);
 
 	HAL_Delay(100);
     /* USER CODE END WHILE */

@@ -6,6 +6,8 @@
 "Components/Src/btn_config.o"
 "Components/Src/dimmer.o"
 "Components/Src/dimmer_config.o"
+"Components/Src/disp.o"
+"Components/Src/disp_config.o"
 "Components/Src/encoder.o"
 "Components/Src/encoder_config.o"
 "Components/Src/heater_pwm.o"

@@ -1,0 +1,60 @@
+/**
+  ******************************************************************************
+  * @file    disp_config.c
+  * @author  AW
+  * @version V1.0
+  * @date    4-Nov-2020
+  * @brief   Simple 4 x 8 segment LED display driver library configuration file.
+  *
+  ******************************************************************************
+  */
+  
+/* Includes ------------------------------------------------------------------*/
+#include "disp.h"
+#include "disp_config.h"
+#include "main.h"
+
+/* Typedef -------------------------------------------------------------------*/
+
+/* Define --------------------------------------------------------------------*/
+
+/* Macro ---------------------------------------------------------------------*/
+
+/* Private variables ---------------------------------------------------------*/
+
+/* Public variables ----------------------------------------------------------*/
+DISP_HandleTypeDef hdisp1 = {
+  // Display GPIO ports and pins
+  .SegmentPorts = {
+    DISP_A_GPIO_Port, DISP_B_GPIO_Port, DISP_C_GPIO_Port, 
+    DISP_D_GPIO_Port, DISP_E_GPIO_Port, DISP_F_GPIO_Port, 
+    DISP_G_GPIO_Port
+  },
+
+  .SegmentPins = {
+    DISP_A_Pin, DISP_B_Pin, DISP_C_Pin, DISP_D_Pin, 
+    DISP_E_Pin, DISP_F_Pin, DISP_G_Pin
+  },
+  
+  .DigitPorts = {
+    DISP_1_GPIO_Port, DISP_2_GPIO_Port, 
+    DISP_3_GPIO_Port, DISP_4_GPIO_Port
+  },
+  
+  .DigitPins = {
+    DISP_1_Pin, DISP_2_Pin, DISP_3_Pin, DISP_4_Pin, 
+  },
+  
+  .DecimalPointPort = DISP_H_GPIO_Port,
+  .DecimalPointPin = DISP_H_Pin,
+  
+  // Display data
+  .DataArray = {0, 0, 0, 0},
+  .DecimalPoint = DISP_NONE
+};
+
+/* Private function prototypes -----------------------------------------------*/
+
+/* Private function ----------------------------------------------------------*/
+
+/* Public function -----------------------------------------------------------*/

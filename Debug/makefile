@@ -29,34 +29,34 @@ endif
 
 -include ../makefile.defs
 
-BUILD_ARTIFACT_NAME := NUCLEO_EXAMPLE
+BUILD_ARTIFACT_NAME := NUCLEO_F746ZG_DEMO
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX := 
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME).$(BUILD_ARTIFACT_EXTENSION)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-NUCLEO_EXAMPLE.elf \
+NUCLEO_F746ZG_DEMO.elf \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-NUCLEO_EXAMPLE.list \
+NUCLEO_F746ZG_DEMO.list \
 
 OBJCOPY_BIN += \
-NUCLEO_EXAMPLE.bin \
+NUCLEO_F746ZG_DEMO.bin \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: NUCLEO_EXAMPLE.elf secondary-outputs
+main-build: NUCLEO_F746ZG_DEMO.elf secondary-outputs
 
 # Tool invocations
-NUCLEO_EXAMPLE.elf: $(OBJS) $(USER_OBJS) C:\Users\AW\STM32CubeIDE\workspace_1.5.0\NUCLEO_EXAMPLE\STM32F746ZGTX_FLASH.ld
-	arm-none-eabi-gcc -o "NUCLEO_EXAMPLE.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\AW\STM32CubeIDE\workspace_1.5.0\NUCLEO_EXAMPLE\STM32F746ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="NUCLEO_EXAMPLE.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+NUCLEO_F746ZG_DEMO.elf: $(OBJS) $(USER_OBJS) C:\Users\AW\Documents\GitHub\NUCLEO_F746ZG_DEMO\STM32F746ZGTX_FLASH.ld
+	arm-none-eabi-gcc -o "NUCLEO_F746ZG_DEMO.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\AW\Documents\GitHub\NUCLEO_F746ZG_DEMO\STM32F746ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="NUCLEO_F746ZG_DEMO.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -65,13 +65,13 @@ default.size.stdout: $(EXECUTABLES)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-NUCLEO_EXAMPLE.list: $(EXECUTABLES)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "NUCLEO_EXAMPLE.list"
+NUCLEO_F746ZG_DEMO.list: $(EXECUTABLES)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "NUCLEO_F746ZG_DEMO.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-NUCLEO_EXAMPLE.bin: $(EXECUTABLES)
-	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "NUCLEO_EXAMPLE.bin"
+NUCLEO_F746ZG_DEMO.bin: $(EXECUTABLES)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "NUCLEO_F746ZG_DEMO.bin"
 	@echo 'Finished building: $@'
 	@echo ' '
 

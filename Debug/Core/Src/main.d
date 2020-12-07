@@ -44,11 +44,12 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Components/Inc/dimmer.h ../Components/Inc/dimmer_config.h \
  ../Components/Inc/led_pwm.h ../Components/Inc/led_pwm_config.h \
  ../Components/Inc/led_rgb.h ../Components/Inc/led_rgb_config.h \
+ ../Components/Inc/disp.h ../Components/Inc/disp_config.h \
  ../Components/Inc/lcd.h ../Components/Inc/lcd_config.h \
  ../Components/Inc/heater_pwm.h ../Components/Inc/heater_pwm_config.h \
  ../Components/Inc/bh1750.h ../Components/Inc/bh1750_config.h \
  ../Components/Inc/bmp280.h ../Components/Inc/bmp280_defs.h \
- ../Components/Inc/bmp280_config.h
+ ../Components/Inc/bmp280_config.h ../Core/Inc/sine_data.csv
 
 ../Core/Inc/main.h:
 
@@ -168,6 +169,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Components/Inc/led_rgb_config.h:
 
+../Components/Inc/disp.h:
+
+../Components/Inc/disp_config.h:
+
 ../Components/Inc/lcd.h:
 
 ../Components/Inc/lcd_config.h:
@@ -185,3 +190,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Components/Inc/bmp280_defs.h:
 
 ../Components/Inc/bmp280_config.h:
+
+../Core/Inc/sine_data.csv:

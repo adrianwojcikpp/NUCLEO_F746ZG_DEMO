@@ -1,0 +1,3 @@
+dimmer.c:42:6:LAMP_StartTimer	24	static
+dimmer.c:62:6:LAMP_StopTimer	16	static
+dimmer.c:72:6:LAMP_TriacFiring	24	static,ignoring_inline_asm

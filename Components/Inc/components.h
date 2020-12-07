@@ -39,6 +39,10 @@
 #include "led_rgb.h"
 #include "led_rgb_config.h"
 
+//! 7-Segment LED display
+#include "disp.h"
+#include "disp_config.h"
+
 //! HD44780 LCD
 #include "lcd.h"
 #include "lcd_config.h"
@@ -124,6 +128,20 @@
 #define ADC_REG2VOLTAGE(reg) (uint32_t)(1000*LINEAR_TRANSFORM((float)reg,  \
                                                      0.0, ADC_REG_MAX,     \
                                                      0.0, ADC_VOLTAGE_MAX))
+
+//! DAC ----------------------------------------------------------------------
+#define DAC_BIT_RES      12    // [bits]
+#define DAC_REG_MAX      (float)((1ul << DAC_BIT_RES) - 1)
+#define DAC_VOLTAGE_MAX  3.3f  // [V]
+
+/**
+ * @brief DAC voltage in volts to data register.
+ * @param[in] vol  Output voltage in volts
+ * @return Data register
+ */
+#define DAC_VOLTAGE2REG(vol) (uint32_t)(LINEAR_TRANSFORM((float)vol, \
+                                               0.0, DAC_VOLTAGE_MAX, \
+                                               0.0, DAC_REG_MAX      ))
 
 /* Public variables ----------------------------------------------------------*/
 
