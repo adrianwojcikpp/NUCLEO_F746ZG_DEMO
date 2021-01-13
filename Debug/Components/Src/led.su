@@ -1,5 +1,0 @@
-led.c:53:6:LED_On	16	static
-led.c:63:6:LED_Off	16	static
-led.c:73:6:LED_Toggle	16	static
-led.c:83:6:LED_SetTo	16	static
-led.c:95:9:LED_Check	16	static
