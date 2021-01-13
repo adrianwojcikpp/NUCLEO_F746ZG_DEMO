@@ -23,6 +23,7 @@
 typedef struct {
   HEATER_PWM_TimerType Timer;
   HEATER_PWM_ChannelType Channel;
+  float Duty;
 } HEATER_PWM_HandleTypeDef;
 
 /* Define --------------------------------------------------------------------*/

@@ -47,6 +47,10 @@
 #include "lcd.h"
 #include "lcd_config.h"
 
+//! Menu
+#include "menu.h"
+#include "menu_config.h"
+
 //! HEATER PWM
 #include "heater_pwm.h"
 #include "heater_pwm_config.h"

@@ -64,6 +64,12 @@ inline void disp_disable_decimal_point(DISP_HandleTypeDef* hdisp)
 }
 
 /* Public function -----------------------------------------------------------*/
+void DISP_Init(DISP_HandleTypeDef* hdisp)
+{
+  DISP_EnableDecimalPoint(hdisp, DISP_DP_4);
+  HAL_TIM_Base_Start_IT(hdisp->Timer);
+}
+
 void DISP_EnableDecimalPoint(DISP_HandleTypeDef* hdisp, DISP_DP_TypeDef dp)
 {
   hdisp->DecimalPoint = dp;

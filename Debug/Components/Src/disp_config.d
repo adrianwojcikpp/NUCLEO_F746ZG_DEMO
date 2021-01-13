@@ -37,7 +37,7 @@ Components/Src/disp_config.o: ../Components/Src/disp_config.c \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart_ex.h \
  ../Components/Inc/disp_config.h ../Components/Inc/disp.h \
- ../Core/Inc/main.h
+ ../Core/Inc/main.h ../Core/Inc/tim.h ../Core/Inc/main.h
 
 ../Components/Inc/disp.h:
 
@@ -116,5 +116,9 @@ Components/Src/disp_config.o: ../Components/Src/disp_config.c \
 ../Components/Inc/disp_config.h:
 
 ../Components/Inc/disp.h:
+
+../Core/Inc/main.h:
+
+../Core/Inc/tim.h:
 
 ../Core/Inc/main.h:

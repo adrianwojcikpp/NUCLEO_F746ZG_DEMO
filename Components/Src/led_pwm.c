@@ -46,6 +46,7 @@ void LED_PWM_Init(LED_PWM_HandleTypeDef* hledpwm)
  */
 void LED_PWM_SetDuty(LED_PWM_HandleTypeDef* hledpwm, float duty)
 {
+  hledpwm->Duty = duty;
   int COMPARE = (duty * (__HAL_TIM_GET_AUTORELOAD(hledpwm->Timer)+1)) / 100;
   __HAL_TIM_SET_COMPARE(hledpwm->Timer, hledpwm->Channel, COMPARE);
 }

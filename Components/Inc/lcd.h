@@ -38,6 +38,7 @@
 /* Typedef -------------------------------------------------------------------*/
 #define LCD_PortType GPIO_TypeDef*
 #define LCD_PinType uint16_t
+#define LCD_TimerType TIM_HandleTypeDef*
 
 typedef enum {
 	LCD_4_BIT_MODE,
@@ -52,6 +53,7 @@ typedef struct {
 	LCD_PortType EN_Port;
 	LCD_PinType  EN_Pin;
 	LCD_ModeTypeDef Mode;
+	LCD_TimerType Timer;
 } LCD_HandleTypeDef;
 
 /* Define --------------------------------------------------------------------*/
@@ -72,12 +74,12 @@ typedef struct {
 #define LCD_OPT_SC 0x08
 #define LCD_OPT_RL 0x04
 
-#define LCD_FUNCTION_SET 0x20
-#define LCD_OPT_DL 0x10					// Set interface data length
-#define LCD_OPT_N  0x08					// Set number of display lines
-#define LCD_OPT_F  0x04					// Set alternate font
+#define LCD_FUNCTION_SET    0x20
+#define LCD_OPT_DL          0x10		// Set interface data length
+#define LCD_OPT_N           0x08		// Set number of display lines
+#define LCD_OPT_F           0x04		// Set alternate font
 #define LCD_SETCGRAM_ADDR  0x040
-#define LCD_SET_DDRAM_ADDR  0x80	// Set DDRAM address
+#define LCD_SET_DDRAM_ADDR  0x80	    // Set DDRAM address
 
 #define LCD_NIB  4
 #define LCD_BYTE 8
@@ -86,7 +88,6 @@ typedef struct {
 #define LCD_COMMAND_REG 0
 
 /* Macro ---------------------------------------------------------------------*/
-#define __LCD_Delay(X) HAL_Delay(X)
 
 /* Public variables ----------------------------------------------------------*/
 

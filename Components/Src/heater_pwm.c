@@ -46,6 +46,7 @@ void HEATER_PWM_Init(HEATER_PWM_HandleTypeDef* hheaterpwm)
  */
 void HEATER_PWM_SetDuty(HEATER_PWM_HandleTypeDef* hheaterpwm, float duty)
 {
+  hheaterpwm->Duty = duty;
   int COMPARE = (duty * (__HAL_TIM_GET_AUTORELOAD(hheaterpwm->Timer)+1)) / 100;
   __HAL_TIM_SET_COMPARE(hheaterpwm->Timer, hheaterpwm->Channel, COMPARE);
 }

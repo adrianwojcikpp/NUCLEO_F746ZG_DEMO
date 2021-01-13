@@ -23,6 +23,7 @@
 typedef struct {
   LED_PWM_TimerType Timer;
   LED_PWM_ChannelType Channel;
+  float Duty;
 } LED_PWM_HandleTypeDef;
 
 /* Define --------------------------------------------------------------------*/

@@ -46,6 +46,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Components/Inc/led_rgb.h ../Components/Inc/led_rgb_config.h \
  ../Components/Inc/disp.h ../Components/Inc/disp_config.h \
  ../Components/Inc/lcd.h ../Components/Inc/lcd_config.h \
+ ../Components/Inc/menu.h ../Components/Inc/menu_config.h \
  ../Components/Inc/heater_pwm.h ../Components/Inc/heater_pwm_config.h \
  ../Components/Inc/bh1750.h ../Components/Inc/bh1750_config.h \
  ../Components/Inc/bmp280.h ../Components/Inc/bmp280_defs.h \
@@ -176,6 +177,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Components/Inc/lcd.h:
 
 ../Components/Inc/lcd_config.h:
+
+../Components/Inc/menu.h:
+
+../Components/Inc/menu_config.h:
 
 ../Components/Inc/heater_pwm.h:
 

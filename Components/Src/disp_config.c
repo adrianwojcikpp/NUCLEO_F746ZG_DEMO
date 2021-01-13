@@ -13,6 +13,7 @@
 #include "disp.h"
 #include "disp_config.h"
 #include "main.h"
+#include "tim.h"
 
 /* Typedef -------------------------------------------------------------------*/
 
@@ -48,6 +49,8 @@ DISP_HandleTypeDef hdisp1 = {
   .DecimalPointPort = DISP_H_GPIO_Port,
   .DecimalPointPin = DISP_H_Pin,
   
+  .Timer = &htim7,
+
   // Display data
   .DataArray = {0, 0, 0, 0},
   .DecimalPoint = DISP_NONE

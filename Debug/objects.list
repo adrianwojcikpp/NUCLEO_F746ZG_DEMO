@@ -20,6 +20,8 @@
 "Components/Src/led_pwm_config.o"
 "Components/Src/led_rgb.o"
 "Components/Src/led_rgb_config.o"
+"Components/Src/menu.o"
+"Components/Src/menu_config.o"
 "Core/Src/adc.o"
 "Core/Src/dac.o"
 "Core/Src/dma.o"

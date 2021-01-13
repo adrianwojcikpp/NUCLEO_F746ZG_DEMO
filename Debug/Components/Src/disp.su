@@ -3,6 +3,7 @@ disp.c:44:13:disp_disable_all_digits	24	static
 disp.c:50:13:disp_enable_digit	16	static
 disp.c:56:13:disp_enable_decimal_point	16	static
 disp.c:61:13:disp_disable_decimal_point	16	static
-disp.c:67:6:DISP_EnableDecimalPoint	16	static
-disp.c:72:6:DISP_printDecUInt	24	static
-disp.c:83:6:DISP_ROUTINE	24	static
+disp.c:67:6:DISP_Init	16	static
+disp.c:73:6:DISP_EnableDecimalPoint	16	static
+disp.c:78:6:DISP_printDecUInt	24	static
+disp.c:89:6:DISP_ROUTINE	24	static

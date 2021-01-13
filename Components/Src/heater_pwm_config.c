@@ -25,7 +25,7 @@
 
 /* Public variables ----------------------------------------------------------*/
 HEATER_PWM_HandleTypeDef hheaterpwm1 = {
-  .Timer = &htim3, .Channel = TIM_CHANNEL_4
+  .Timer = &htim3, .Channel = TIM_CHANNEL_4, .Duty = 0
 };
 
 /* Private function prototypes -----------------------------------------------*/

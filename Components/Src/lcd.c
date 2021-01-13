@@ -21,6 +21,7 @@
 #define LCD_PRINTF_BUF_SIZE 64
 
 /* Macro ---------------------------------------------------------------------*/
+#define __LCD_Delay(__HANDLE__, delay_ms) lcd_delay_us((__HANDLE__),(float)delay_ms * 1000.0)
 
 /* Private variables ---------------------------------------------------------*/
 const uint8_t LCD_ROW_16[] = {0x00, 0x40, 0x10, 0x50};
@@ -30,8 +31,10 @@ const uint8_t LCD_ROW_20[] = {0x00, 0x40, 0x14, 0x54};
 
 /* Private function prototypes -----------------------------------------------*/
 void lcd_write_command(LCD_HandleTypeDef* hlcd, uint8_t command);
+void lcd_write_4bit_command(LCD_HandleTypeDef* hlcd, uint8_t data);
 void lcd_write_data(LCD_HandleTypeDef* hlcd, uint8_t data);
 void lcd_write(LCD_HandleTypeDef* hlcd, uint8_t data, uint8_t len);
+void lcd_delay_us(LCD_HandleTypeDef* hlcd, uint32_t delay_us);
 
 /* Private function ----------------------------------------------------------*/
 /**
@@ -52,6 +55,21 @@ void lcd_write_command(LCD_HandleTypeDef* hlcd, uint8_t command)
   else
   {
      lcd_write(hlcd, command, LCD_BYTE);
+  }
+}
+
+/**
+ * @brief Write a 4 bits to the command register
+ * @param[in] hlcd LCD handler
+ * @param[in] data Display data byte
+ * @return None
+ */
+void lcd_write_4bit_command(LCD_HandleTypeDef* hlcd, uint8_t data)
+{
+  if(hlcd->Mode == LCD_4_BIT_MODE)
+  {
+	HAL_GPIO_WritePin(hlcd->RS_Port, hlcd->RS_Pin, LCD_DATA_REG);     // Write to data register
+    lcd_write(hlcd, data & 0x0F, LCD_NIB);
   }
 }
 
@@ -91,8 +109,23 @@ void lcd_write(LCD_HandleTypeDef* hlcd, uint8_t data, uint8_t len)
   }
 
   HAL_GPIO_WritePin(hlcd->EN_Port, hlcd->EN_Pin, GPIO_PIN_SET);
-  __LCD_Delay(1);
+  __LCD_Delay(hlcd, 0.05);  // > 41 us
   HAL_GPIO_WritePin(hlcd->EN_Port, hlcd->EN_Pin, GPIO_PIN_RESET); // Data receive on falling edge
+}
+
+
+/**
+ * @brief LCD delay function
+ * @param[in] hlcd LCD handler
+ * @param[in] delay_us Delay period in microseconds
+ * @return None
+ */
+void lcd_delay_us(LCD_HandleTypeDef* hlcd, uint32_t delay_us)
+{
+  __HAL_TIM_SET_COUNTER(hlcd->Timer, 0);
+  HAL_TIM_Base_Start(hlcd->Timer);
+  while(__HAL_TIM_GET_COUNTER(hlcd->Timer) < delay_us);
+  HAL_TIM_Base_Stop(hlcd->Timer);
 }
 
 /* Public function -----------------------------------------------------------*/
@@ -105,18 +138,34 @@ void lcd_write(LCD_HandleTypeDef* hlcd, uint8_t data, uint8_t len)
  */
 void LCD_Init(LCD_HandleTypeDef* hlcd)
 {
+  __LCD_Delay(hlcd, 15.2);              // >15 ms
   if(hlcd->Mode == LCD_4_BIT_MODE)
   {
-    lcd_write_command(hlcd, 0x33); // 0011 0011
-    lcd_write_command(hlcd, 0x32); // 0011 0010
-    lcd_write_command(hlcd, LCD_FUNCTION_SET | LCD_OPT_N);       // 4-bit mode
-  }
-  else
-    lcd_write_command(hlcd, LCD_FUNCTION_SET | LCD_OPT_DL | LCD_OPT_N);
+    lcd_write_4bit_command(hlcd, 0x03); // 0011
+    __LCD_Delay(hlcd, 4.2);             // > 4.1 ms
+    lcd_write_4bit_command(hlcd, 0x03); // 0011
+    __LCD_Delay(hlcd, 0.2);             // > 0.1 ms
+    lcd_write_4bit_command(hlcd, 0x03); // 0011
+    lcd_write_4bit_command(hlcd, 0x02); // 0010
 
-  lcd_write_command(hlcd, LCD_CLEAR_DISPLAY);                    // Clear screen
+    lcd_write_command(hlcd, LCD_FUNCTION_SET | LCD_OPT_N);
+  }
+  else if(hlcd->Mode == LCD_8_BIT_MODE) /* TODO: test 8-bit interface */
+  {
+	lcd_write_command(hlcd, 0x30); // 0011 XXXX
+	__LCD_Delay(hlcd, 4.2);        // > 4.1 ms
+	lcd_write_command(hlcd, 0x30); // 0011 XXXX
+	__LCD_Delay(hlcd, 0.2);        // > 0.1 ms
+	lcd_write_command(hlcd, 0x30); // 0011 XXXX
+
+    lcd_write_command(hlcd, LCD_FUNCTION_SET | LCD_OPT_DL | LCD_OPT_N);
+  }
+
+  lcd_write_command(hlcd, LCD_CLEAR_DISPLAY);                        // Clear screen
+  __LCD_Delay(hlcd, 1.6);                                            // > 1.52 ms
   lcd_write_command(hlcd, LCD_DISPLAY_ON_OFF_CONTROL | LCD_OPT_D);   // LCD on, Cursor off, No blink
   lcd_write_command(hlcd, LCD_ENTRY_MODE_SET | LCD_OPT_INC);         // Cursor increment on
+
 }
 
 /**

@@ -28,7 +28,8 @@ LED_RGB_HandleTypeDef hledrgb1 = {
   .Timer = &htim3,
   .ChannelR = TIM_CHANNEL_1,
   .ChannelG = TIM_CHANNEL_2,
-  .ChannelB = TIM_CHANNEL_3
+  .ChannelB = TIM_CHANNEL_3,
+  .DutyR = 0, .DutyG = 0, .DutyB = 0
 };
 
 /* Private function prototypes -----------------------------------------------*/

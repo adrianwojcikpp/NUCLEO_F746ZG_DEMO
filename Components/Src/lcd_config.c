@@ -13,6 +13,7 @@
 #include "lcd.h"
 #include "lcd_config.h"
 #include "main.h"
+#include "tim.h"
 
 /* Typedef -------------------------------------------------------------------*/
 
@@ -34,7 +35,8 @@ LCD_HandleTypeDef hlcd1 = {
   .Data_Port = LCD_Ports, .Data_Pin = LCD_Pins, 
   .RS_Port = LCD_RS_GPIO_Port, .RS_Pin = LCD_RS_Pin,
   .EN_Port = LCD_EN_GPIO_Port, .EN_Pin = LCD_EN_Pin,
-  .Mode = LCD_4_BIT_MODE
+  .Mode = LCD_4_BIT_MODE,
+  .Timer = &htim5
 };
 
 /* Private function ----------------------------------------------------------*/

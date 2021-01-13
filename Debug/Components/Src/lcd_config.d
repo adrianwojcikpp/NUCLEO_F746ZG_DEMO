@@ -37,7 +37,7 @@ Components/Src/lcd_config.o: ../Components/Src/lcd_config.c \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart_ex.h \
  ../Components/Inc/lcd_config.h ../Components/Inc/lcd.h \
- ../Core/Inc/main.h
+ ../Core/Inc/main.h ../Core/Inc/tim.h ../Core/Inc/main.h
 
 ../Components/Inc/lcd.h:
 
@@ -116,5 +116,9 @@ Components/Src/lcd_config.o: ../Components/Src/lcd_config.c \
 ../Components/Inc/lcd_config.h:
 
 ../Components/Inc/lcd.h:
+
+../Core/Inc/main.h:
+
+../Core/Inc/tim.h:
 
 ../Core/Inc/main.h:

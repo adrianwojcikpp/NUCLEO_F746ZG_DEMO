@@ -23,8 +23,11 @@
 typedef struct {
   LED_RGB_TimerType Timer;
   LED_RGB_ChannelType ChannelR;
+  float DutyR;
   LED_RGB_ChannelType ChannelG;
+  float DutyG;
   LED_RGB_ChannelType ChannelB;
+  float DutyB;
 } LED_RGB_HandleTypeDef;
 
 typedef enum {
@@ -59,6 +62,17 @@ void LED_RGB_Init(LED_RGB_HandleTypeDef* hledrgb);
  * @return None
  */
 void LED_RGB_SetDuty(LED_RGB_HandleTypeDef* hledrgb, LED_Channel ch, float duty);
+
+/**
+ * @brief Gets duty of selected channel of LED RGB.
+ * @param[in] hledrgb LED RGB handler
+ * @param[in] ch      LED RGB channel (color)
+ *     @arg LED_CHANNEL_R: Red channel selected
+ *     @arg LED_CHANNEL_G: Green channel selected
+ *     @arg LED_CHANNEL_B: Blue channel selected
+ * @return PWM duty in percents. Negative number if error.
+ */
+float LED_RGB_GetDuty(LED_RGB_HandleTypeDef* hledrgb, LED_Channel ch);
 
 /**
  * @brief Sets color LED RGB.

@@ -21,6 +21,7 @@
 /* Typedef -------------------------------------------------------------------*/
 #define DISP_PortType GPIO_TypeDef*
 #define DISP_PinType uint16_t
+#define DISP_TimerType TIM_HandleTypeDef*
 
 typedef enum {
   DISP_DP_1 = 0, DISP_DP_2, DISP_DP_3, DISP_DP_4, DISP_NONE
@@ -34,6 +35,7 @@ typedef struct {
   DISP_PinType  SegmentPins[DISP_SEG_NO];
   DISP_PortType DecimalPointPort;
   DISP_PinType  DecimalPointPin;
+  DISP_TimerType Timer;
   // Display data
   uint8_t DataArray[DISP_DIG_NO];
   DISP_DP_TypeDef  DecimalPoint;
@@ -46,6 +48,7 @@ typedef struct {
 /* Public variables ----------------------------------------------------------*/
 
 /* Public function prototypes ------------------------------------------------*/
+void DISP_Init(DISP_HandleTypeDef* hdisp);
 void DISP_EnableDecimalPoint(DISP_HandleTypeDef* hdisp, DISP_DP_TypeDef dp);
 void DISP_printDecUInt(DISP_HandleTypeDef* hdisp, uint16_t dec);
 void DISP_ROUTINE(DISP_HandleTypeDef* hdisp);

@@ -52,17 +52,21 @@ void LED_RGB_Init(LED_RGB_HandleTypeDef* hledrgb)
  */
 void LED_RGB_SetDuty(LED_RGB_HandleTypeDef* hledrgb, LED_Channel ch, float duty)
 {
+
   LED_RGB_ChannelType channel = 0;
   switch(ch)
   {
     case LED_CHANNEL_R:
 	  channel = hledrgb->ChannelR;
+	  hledrgb->DutyR = duty;
 	  break;
     case LED_CHANNEL_G:
 	  channel = hledrgb->ChannelG;
+	  hledrgb->DutyG = duty;
 	  break;
     case LED_CHANNEL_B:
 	  channel = hledrgb->ChannelB;
+	  hledrgb->DutyB = duty;
 	  break;
     default:
       break;
@@ -70,6 +74,34 @@ void LED_RGB_SetDuty(LED_RGB_HandleTypeDef* hledrgb, LED_Channel ch, float duty)
 
   int COMPARE = (duty * (__HAL_TIM_GET_AUTORELOAD(hledrgb->Timer)+1)) / 100;
   __HAL_TIM_SET_COMPARE(hledrgb->Timer, channel, COMPARE);
+}
+
+/**
+ * @brief Gets duty of selected channel of LED RGB.
+ * @param[in] hledrgb LED RGB handler
+ * @param[in] ch      LED RGB channel (color)
+ *     @arg LED_CHANNEL_R: Red channel selected
+ *     @arg LED_CHANNEL_G: Green channel selected
+ *     @arg LED_CHANNEL_B: Blue channel selected
+ * @return PWM duty in percents. Negative number if error.
+ */
+float LED_RGB_GetDuty(LED_RGB_HandleTypeDef* hledrgb, LED_Channel ch)
+{
+  switch(ch)
+  {
+    case LED_CHANNEL_R:
+	  return hledrgb->DutyR;
+	  break;
+    case LED_CHANNEL_G:
+	  return hledrgb->DutyG;
+	  break;
+    case LED_CHANNEL_B:
+      return hledrgb->DutyB;
+	  break;
+    default:
+      return -1.0f;
+      break;
+  }
 }
 
 /**

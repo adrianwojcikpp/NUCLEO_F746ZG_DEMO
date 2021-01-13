@@ -34,21 +34,11 @@
 #include <stdio.h>
 #include <string.h>
 
-//#include "disp_garbage.c" // TODO: napisz tą bibliteke po ludzku
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-typedef enum {
-	LED_R1, LED_R2, LED_G1, LED_G2, LED_B1, LED_B2,  // LEDs
-	LED_RGB_R, LED_RGB_G, LED_RGB_B,                 // LED RGB
-	POT1, POT2,                                      // Potentiometers (ADC)
-	LAMP,                                            // Dimmer board (lamp controller)
-	LIGHT_SENSOR_1, LIGHT_SENSOR_2,                  // BH1750 light sensors
-	TEMP_SENSOR_1, TEMP_SENSOR_2,                    // BMP280 temperature sensors
-	HEATER                                           //
-} MenuItem_TypeDef;
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -64,13 +54,14 @@ typedef enum {
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-MenuItem_TypeDef menu_item = LED_R1;
 
 // Rotary encoder
-static int32_t enc_cnt = 0;
-
+int32_t enc_cnt = 0;
+int32_t enc_cnt_prev = 0;
+_Bool enc_inc = 0;
+_Bool enc_dec = 0;
 // Lamp controller
-static float triac_firing_ang = 90;
+float triac_firing_ang = 90;
 
 // ADC conversion results
 uint16_t adc_measurement[ADC_CHANNEL_NUMBER] = {0, 0};   // ADC register value
@@ -78,7 +69,7 @@ uint32_t adc_voltage_mV[ADC_CHANNEL_NUMBER] = {0, 0};
 
 // DAC data
 uint16_t sine_wave[] = {
-#include "sine_data.csv"
+  #include "sine_data.csv"
 };
 
 /* USER CODE END PV */
@@ -86,7 +77,7 @@ uint16_t sine_wave[] = {
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-void LED_Handler(LED_HandleTypeDef* led, uint8_t led_color, uint8_t led_n, char* lcd_buffer, uint8_t* lcd_text_len);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -101,9 +92,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   /* Push buttons handling */
   if(GPIO_Pin == hbtn1.Pin)
-	 menu_item = (menu_item < HEATER) ? (menu_item + 1) : (LED_R1);
+	 menu_item = menu_item->next;
   else if(GPIO_Pin == hbtn2.Pin)
-	 menu_item = (menu_item > LED_R1) ? (menu_item - 1) : (HEATER);
+	 menu_item = menu_item->prev;
 
   /* Dimmer (LAMP) handling */
   else if(GPIO_Pin == hlamp1.SYNC_Pin)
@@ -120,7 +111,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* Dimmer (LAMP) handling */
   if(htim->Instance == hlamp1.Timer->Instance)
     LAMP_TriacFiring(&hlamp1);
-  else if(htim->Instance == TIM7)
+  else if(htim->Instance == hdisp1.Timer->Instance)
 	DISP_ROUTINE(&hdisp1);
 }
 
@@ -148,12 +139,6 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  char lcd_buffer[LCD_LINE_BUF_LEN];
-  uint8_t lcd_text_len;
-
-  struct bmp280_uncomp_data bmp280_1_data;
-  struct bmp280_uncomp_data bmp280_2_data;
-  int32_t temp;
 
   /* USER CODE END 1 */
 
@@ -186,22 +171,39 @@ int main(void)
   MX_DAC_Init();
   MX_TIM6_Init();
   MX_TIM7_Init();
+  MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
 
+  /** Analog output initialization: sine wave generation *********************************/
   HAL_TIM_Base_Start(&htim6);
   HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, (uint32_t*)sine_wave, 100, DAC_ALIGN_12B_R) ;
 
+  /** LCD with user menu initialization **************************************************/
   LCD_Init(&hlcd1);
+  menu_item = &menu_ledr1; //< start from LED Red #1
+
+  /** PWM-controller LED ARGB initialization *********************************************/
   LED_RGB_Init(&hledrgb1);
+
+  /** PWM-controller heater initialization ***********************************************/
   HEATER_PWM_Init(&hheaterpwm1);
+
+  /** Rotary quadrature encoder initialization *******************************************/
   ENC_Init(&henc1);
+
+  /** Digital light sensors initialization: BH1750 with I2C bus **************************/
   BH1750_Init(&hbh1750_1);
   BH1750_Init(&hbh1750_2);
+
+  /** Digital temperature and pressure sensors initialization: BMP280 with SPI bus *******/
+  struct bmp280_uncomp_data bmp280_1_data;
+  struct bmp280_uncomp_data bmp280_2_data;
+  int32_t temp;
   BMP280_Init(&bmp280_1);
   BMP280_Init(&bmp280_2);
 
-  HAL_TIM_Base_Start_IT(&htim7);
-  DISP_EnableDecimalPoint(&hdisp1, DISP_DP_4);
+  /** Seven-segment display initialization - analog input readout ************************/
+  DISP_Init(&hdisp1);
 
   /* USER CODE END 2 */
 
@@ -209,123 +211,34 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	/* Multiple channels | Independent mode | Direct memory access mode */
+#if 1
+
+	/** Input reading **********************************************************************/
+
+	// Read analog inputs
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_measurement, ADC_CHANNEL_NUMBER);
 
-	switch(menu_item)
-	{
-	/* LEDR1: On-board red LED *****************************************/
-	case LED_R1:
-	  LED_Handler(&hledr1, 'R', 1, lcd_buffer, &lcd_text_len);
-      break;
-
-    /* LEDR2: External (breadboard) red LED ***************************/
-	case LED_R2:
-	  LED_Handler(&hledr2, 'R', 2, lcd_buffer, &lcd_text_len);
-      break;
-
-    /* LEDG1: On-board green LED **************************************/
-	case LED_G1:
-	  LED_Handler(&hledg1, 'G', 1, lcd_buffer, &lcd_text_len);
-      break;
-
-    /* LEDG2: External (breadboard) green LED *************************/
-	case LED_G2:
-	  LED_Handler(&hledg2, 'G', 2, lcd_buffer, &lcd_text_len);
-      break;
-
-    /* LEDB1: On-board blue LED ***************************************/
-	case LED_B1:
-	  LED_Handler(&hledb1, 'B', 1, lcd_buffer, &lcd_text_len);
-      break;
-
-    /* LEDB2: External (breadboard) blue LED *************************/
-	case LED_B2:
-	  LED_Handler(&hledb2, 'B', 2, lcd_buffer, &lcd_text_len);
-	  break;
-
-	/* LED RGB - channel red PWM control *****************************/
-	case LED_RGB_R:
-	  lcd_text_len = sprintf(lcd_buffer, "RGB (R): %03d [%%]", (int)(ENC_GetCounter(&henc1)));
-	  LED_RGB_SetDuty(&hledrgb1, LED_CHANNEL_R, (float)(ENC_GetCounter(&henc1)));
-      break;
-
-    /* LED RGB - channel green PWM control ***************************/
-	case LED_RGB_G:
-	  lcd_text_len = sprintf(lcd_buffer, "RGB (G): %03d [%%]", (int)(ENC_GetCounter(&henc1)));
-	  LED_RGB_SetDuty(&hledrgb1, LED_CHANNEL_G, (float)(ENC_GetCounter(&henc1)));
-      break;
-
-    /* LED RGB - channel blue PWM control ****************************/
-	case LED_RGB_B:
-	  lcd_text_len = sprintf(lcd_buffer, "RGB (B): %03d [%%]", (int)(ENC_GetCounter(&henc1)));
-	  LED_RGB_SetDuty(&hledrgb1, LED_CHANNEL_B, (float)(ENC_GetCounter(&henc1)));
-      break;
-
-    /* Potentiometer #1 (ADC channel of rank 1) *********************/
-	case POT1:
-	  lcd_text_len = sprintf(lcd_buffer, "POT1: %04d [mV]", (int)adc_voltage_mV[ADC_POT1]);
-	  break;
-
-	/* Potentiometer #2 (ADC channel of rank 2) *********************/
-	case POT2:
-	  lcd_text_len = sprintf(lcd_buffer, "POT2: %04d [mV]", (int)adc_voltage_mV[ADC_POT2]);
-	  break;
-
-	/* Dimmer (lamp controller) ************************************/
-	case LAMP:
-	  triac_firing_ang = ENC2ANG(&henc1, &hlamp1);
-	  lcd_text_len = sprintf(lcd_buffer, "LAMP: %03d [%%]", (int)(100 - ENC_GetCounter(&henc1)));
-	  break;
-
-	/* Digital light sensor (BH1750) #1 ****************************/
-	case LIGHT_SENSOR_1:
-	  lcd_text_len = sprintf(lcd_buffer, "L1: %05d [LX]", (int)(BH1750_ReadLux(&hbh1750_1)));
-	  break;
-
-	/* Digital light sensor (BH1750) #2 ****************************/
-	case LIGHT_SENSOR_2:
-	  lcd_text_len = sprintf(lcd_buffer, "L2: %05d [LX]", (int)(BH1750_ReadLux(&hbh1750_2)));
-	  break;
-
-	/* Digital temperature and pressure sensor (BMP280) #1 ********/
-	case TEMP_SENSOR_1:
-	  bmp280_get_uncomp_data(&bmp280_1_data, &bmp280_1);
-	  bmp280_get_comp_temp_32bit(&temp, bmp280_1_data.uncomp_temp, &bmp280_1);
-	  lcd_text_len = sprintf(lcd_buffer, "TEMP1: %04d [*C]", (int)temp);
-	  HAL_Delay(150);
-	  break;
-
-	/* Digital temperature and pressure sensor (BMP280) #2 ********/
-	case TEMP_SENSOR_2:
-	  bmp280_get_uncomp_data(&bmp280_2_data, &bmp280_2);
-	  bmp280_get_comp_temp_32bit(&temp, bmp280_2_data.uncomp_temp, &bmp280_2);
-	  lcd_text_len = sprintf(lcd_buffer, "TEMP2: %04d [*C]", (int)temp);
-      HAL_Delay(150);
-	  break;
-
-	/* PWM-controller resistor as heater **************************/
-	case HEATER:
-	  HEATER_PWM_SetDuty(&hheaterpwm1, (float)(ENC_GetCounter(&henc1)));
-	  lcd_text_len = sprintf(lcd_buffer, "HEATER: %d [%%]", (int)(ENC_GetCounter(&henc1)));
-	  break;
-
-	default: break;
-	}
-
+	// Read rotary encoder counter
 	enc_cnt = ENC_GetCounter(&henc1);
+	enc_inc = (enc_cnt > enc_cnt_prev);
+	enc_dec = (enc_cnt < enc_cnt_prev);
+	enc_cnt_prev = enc_cnt;
 
-	/* LCD menu  **************************************************/
-	memset(lcd_buffer + lcd_text_len, ' ', (LCD_LINE_BUF_LEN-1) - lcd_text_len);
+	/** LCD menu ***************************************************************************/
+	MENU_ClearDisplayBuffer(menu_item);
+	MENU_CallFunction(menu_item);
+
 	LCD_SetCursor(&hlcd1, 0, 0);
-	LCD_printStr(&hlcd1, lcd_buffer);
+	LCD_printStr(&hlcd1, menu_item->display_str);
 	LCD_SetCursor(&hlcd1, 1, 0);
-	LCD_printf(&hlcd1, "ENC: %03d", ENC_GetCounter(&henc1));
+	LCD_printf(&hlcd1, "ENC: %03d", enc_cnt);
 
-	/* DISP *******************************************************/
+	/** Seven-segment display **************************************************************/
 	DISP_printDecUInt(&hdisp1, (int)adc_voltage_mV[ADC_POT2]);
 
+	// Loop delay
 	HAL_Delay(100);
+#endif
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -394,18 +307,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void LED_Handler(LED_HandleTypeDef* led, uint8_t led_color, uint8_t led_n, char* lcd_buffer, uint8_t* lcd_text_len)
-{
-  if(enc_cnt < ENC_GetCounter(&henc1))
-    LED_On(led);
-  else if(enc_cnt > ENC_GetCounter(&henc1))
-    LED_Off(led);
 
-  if(LED_Check(led))
-    *lcd_text_len = sprintf(lcd_buffer, "LED %c%d ON ", led_color, led_n);
-  else
-	*lcd_text_len = sprintf(lcd_buffer, "LED %c%d OFF", led_color, led_n);
-}
 /* USER CODE END 4 */
 
 /**
