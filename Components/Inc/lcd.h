@@ -46,12 +46,12 @@ typedef enum {
 } LCD_ModeTypeDef;
 
 typedef struct {
-	LCD_PortType* Data_Port;
-	LCD_PinType* Data_Pin;
+	LCD_PortType* DATA_Ports;
+	LCD_PinType* DATA_Pins;
 	LCD_PortType RS_Port;
 	LCD_PinType  RS_Pin;
-	LCD_PortType EN_Port;
-	LCD_PinType  EN_Pin;
+	LCD_PortType E_Port;
+	LCD_PinType  E_Pin;
 	LCD_ModeTypeDef Mode;
 	LCD_TimerType Timer;
 } LCD_HandleTypeDef;

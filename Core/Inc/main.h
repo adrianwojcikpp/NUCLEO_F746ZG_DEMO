@@ -97,8 +97,8 @@ void Error_Handler(void);
 #define RMII_REF_CLK_GPIO_Port GPIOA
 #define RMII_MDIO_Pin GPIO_PIN_2
 #define RMII_MDIO_GPIO_Port GPIOA
-#define LCD_EN_Pin GPIO_PIN_3
-#define LCD_EN_GPIO_Port GPIOA
+#define LCD_E_Pin GPIO_PIN_3
+#define LCD_E_GPIO_Port GPIOA
 #define OSC_AOUT_Pin GPIO_PIN_4
 #define OSC_AOUT_GPIO_Port GPIOA
 #define EX1_Btn_Pin GPIO_PIN_5

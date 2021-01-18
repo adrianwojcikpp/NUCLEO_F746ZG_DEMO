@@ -29,12 +29,12 @@ typedef enum {
 
 typedef struct {
   // Display GPIO ports and pins
-  DISP_PortType DigitPorts[DISP_DIG_NO];
-  DISP_PinType  DigitPins[DISP_DIG_NO];
-  DISP_PortType SegmentPorts[DISP_SEG_NO];
-  DISP_PinType  SegmentPins[DISP_SEG_NO];
-  DISP_PortType DecimalPointPort;
-  DISP_PinType  DecimalPointPin;
+  DISP_PortType Digit_Ports[DISP_DIG_NO];
+  DISP_PinType  Digit_Pins[DISP_DIG_NO];
+  DISP_PortType Segment_Ports[DISP_SEG_NO];
+  DISP_PinType  Segment_Pins[DISP_SEG_NO];
+  DISP_PortType DecimalPoint_Port;
+  DISP_PinType  DecimalPoint_Pin;
   DISP_TimerType Timer;
   // Display data
   uint8_t DataArray[DISP_DIG_NO];

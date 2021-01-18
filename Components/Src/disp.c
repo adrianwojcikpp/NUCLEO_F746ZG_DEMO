@@ -35,32 +35,32 @@ void disp_enable_decimal_point(DISP_HandleTypeDef* hdisp);
 void disp_disable_decimal_point(DISP_HandleTypeDef* hdisp);
 
 /* Private function ----------------------------------------------------------*/
-inline void disp_write_byte(DISP_HandleTypeDef* hdisp, uint8_t byte)
+inline void disp_write_byte(DISP_HandleTypeDef* hdisp, uint8_t data)
 {
   for(uint8_t i = 0; i < DISP_SEG_NO; i++)
-    HAL_GPIO_WritePin(hdisp->SegmentPorts[i], hdisp->SegmentPins[i], 0x01 & (byte >> i));
+    HAL_GPIO_WritePin(hdisp->Segment_Ports[i], hdisp->Segment_Pins[i], (data >> i) & 0x01);
 }
 
 inline void disp_disable_all_digits(DISP_HandleTypeDef* hdisp)
 {
   for(uint8_t i = 0; i < DISP_DIG_NO; i++)
-    HAL_GPIO_WritePin(hdisp->DigitPorts[i], hdisp->DigitPins[i], GPIO_PIN_RESET); 
+    HAL_GPIO_WritePin(hdisp->Digit_Ports[i], hdisp->Digit_Pins[i], GPIO_PIN_RESET);
 }
 
 inline void disp_enable_digit(DISP_HandleTypeDef* hdisp, uint8_t dig)
 {
   if(dig >= 0 && dig < DISP_DIG_NO)
-   HAL_GPIO_WritePin(hdisp->DigitPorts[dig], hdisp->DigitPins[dig], GPIO_PIN_SET); 
+   HAL_GPIO_WritePin(hdisp->Digit_Ports[dig], hdisp->Digit_Pins[dig], GPIO_PIN_SET);
 }
 
 inline void disp_enable_decimal_point(DISP_HandleTypeDef* hdisp)
 {
-  HAL_GPIO_WritePin(hdisp->DecimalPointPort, hdisp->DecimalPointPin, GPIO_PIN_RESET); 
+  HAL_GPIO_WritePin(hdisp->DecimalPoint_Port, hdisp->DecimalPoint_Pin, GPIO_PIN_RESET);
 }
 
 inline void disp_disable_decimal_point(DISP_HandleTypeDef* hdisp)
 {
-  HAL_GPIO_WritePin(hdisp->DecimalPointPort, hdisp->DecimalPointPin, GPIO_PIN_SET); 
+  HAL_GPIO_WritePin(hdisp->DecimalPoint_Port, hdisp->DecimalPoint_Pin, GPIO_PIN_SET);
 }
 
 /* Public function -----------------------------------------------------------*/

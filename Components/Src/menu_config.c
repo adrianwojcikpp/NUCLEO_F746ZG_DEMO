@@ -146,7 +146,7 @@ MenuItem_TypeDef menu_temp1 = {"TEMP1: 0000 [*C]", 16, &menu_temp2, &menu_light2
 
 /* Digital temperature sensor #2: BMP280 (CS2) */
 void menu_temp_sensor2_fcn(MenuItem_TypeDef* hmenuitem){ menu_temp_sensors_fcn(hmenuitem, &bmp280_2, '2'); }
-MenuItem_TypeDef menu_temp2 = {"TEMP1: 0000 [*C]", 16, &menu_heater1, &menu_temp1, NULL, NULL, menu_temp_sensor2_fcn};
+MenuItem_TypeDef menu_temp2 = {"TEMP2: 0000 [*C]", 16, &menu_heater1, &menu_temp1, NULL, NULL, menu_temp_sensor2_fcn};
 
 /** MENU TEMPERATURE SENSORS CODE END ****************************************************************************************/
 
