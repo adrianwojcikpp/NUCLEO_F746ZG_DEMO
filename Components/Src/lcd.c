@@ -31,7 +31,6 @@ const uint8_t LCD_ROW_20[] = {0x00, 0x40, 0x14, 0x54};
 
 /* Private function prototypes -----------------------------------------------*/
 void lcd_write_command(LCD_HandleTypeDef* hlcd, uint8_t command);
-void lcd_write_4bit_command(LCD_HandleTypeDef* hlcd, uint8_t data);
 void lcd_write_data(LCD_HandleTypeDef* hlcd, uint8_t data);
 void lcd_write(LCD_HandleTypeDef* hlcd, uint8_t data, uint8_t len);
 void lcd_delay_us(LCD_HandleTypeDef* hlcd, uint32_t delay_us);
@@ -39,8 +38,8 @@ void lcd_delay_us(LCD_HandleTypeDef* hlcd, uint32_t delay_us);
 /* Private function ----------------------------------------------------------*/
 /**
  * @brief Write a byte to the command register
- * @param[in] hlcd LCD handler
- * @param[in] data Display command @see lcd.h/Define
+ * @param[in] hlcd    LCD handler
+ * @param[in] command Display command @see lcd.h/Define
  * @return None
  */
 void lcd_write_command(LCD_HandleTypeDef* hlcd, uint8_t command)
@@ -49,27 +48,15 @@ void lcd_write_command(LCD_HandleTypeDef* hlcd, uint8_t command)
 
   if(hlcd->Mode == LCD_4_BIT_MODE)
   {
-    lcd_write(hlcd, (command >> 4), LCD_NIB);
+	if(hlcd->IsInitialized) // Before initialization ignore most significant nibble
+	{
+	  lcd_write(hlcd, (command >> 4), LCD_NIB);
+	}
     lcd_write(hlcd, command & 0x0F, LCD_NIB);
   }
   else
   {
      lcd_write(hlcd, command, LCD_BYTE);
-  }
-}
-
-/**
- * @brief Write a 4 bits to the command register
- * @param[in] hlcd LCD handler
- * @param[in] data Display data byte
- * @return None
- */
-void lcd_write_4bit_command(LCD_HandleTypeDef* hlcd, uint8_t data)
-{
-  if(hlcd->Mode == LCD_4_BIT_MODE)
-  {
-    HAL_GPIO_WritePin(hlcd->RS_Port, hlcd->RS_Pin, LCD_COMMAND_REG);    // Write to command register
-    lcd_write(hlcd, data & 0x0F, LCD_NIB);
   }
 }
 
@@ -137,15 +124,20 @@ void lcd_delay_us(LCD_HandleTypeDef* hlcd, uint32_t delay_us)
  */
 void LCD_Init(LCD_HandleTypeDef* hlcd)
 {
-  __LCD_Delay(hlcd, 15.2);              // >15 ms
+  hlcd->IsInitialized = 0;
+
+  __LCD_Delay(hlcd, 15.2);         // >15 ms
+
   if(hlcd->Mode == LCD_4_BIT_MODE)
   {
-    lcd_write_4bit_command(hlcd, 0x3); // 0011
-    __LCD_Delay(hlcd, 4.2);             // > 4.1 ms
-    lcd_write_4bit_command(hlcd, 0x3); // 0011
-    __LCD_Delay(hlcd, 0.2);             // > 0.1 ms
-    lcd_write_4bit_command(hlcd, 0x3); // 0011
-    lcd_write_4bit_command(hlcd, 0x2); // 0010
+    lcd_write_command(hlcd, 0x3);  // 0011
+    __LCD_Delay(hlcd, 4.2);        // > 4.1 ms
+    lcd_write_command(hlcd, 0x3);  // 0011
+    __LCD_Delay(hlcd, 0.2);        // > 0.1 ms
+    lcd_write_command(hlcd, 0x3);  // 0011
+    lcd_write_command(hlcd, 0x2);  // 0010
+
+    hlcd->IsInitialized = 1;
 
     lcd_write_command(hlcd, LCD_FUNCTION_SET | LCD_OPT_N);
   }
@@ -156,6 +148,8 @@ void LCD_Init(LCD_HandleTypeDef* hlcd)
 	lcd_write_command(hlcd, 0x30); // 0011 XXXX
 	__LCD_Delay(hlcd, 0.2);        // > 0.1 ms
 	lcd_write_command(hlcd, 0x30); // 0011 XXXX
+
+	hlcd->IsInitialized = 1;
 
     lcd_write_command(hlcd, LCD_FUNCTION_SET | LCD_OPT_DL | LCD_OPT_N);
   }

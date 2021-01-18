@@ -28,14 +28,14 @@ const uint8_t DISP_COMMON_ANODE_DECIMALS[] = {
 /* Public variables ----------------------------------------------------------*/
 
 /* Private function prototypes -----------------------------------------------*/
-void disp_write_byte(DISP_HandleTypeDef* hdisp, uint8_t byte);
+void disp_write_data(DISP_HandleTypeDef* hdisp, uint8_t byte);
 void disp_disable_all_digits(DISP_HandleTypeDef* hdisp);
 void disp_enable_digit(DISP_HandleTypeDef* hdisp, uint8_t dig);
 void disp_enable_decimal_point(DISP_HandleTypeDef* hdisp);
 void disp_disable_decimal_point(DISP_HandleTypeDef* hdisp);
 
 /* Private function ----------------------------------------------------------*/
-inline void disp_write_byte(DISP_HandleTypeDef* hdisp, uint8_t data)
+inline void disp_write_data(DISP_HandleTypeDef* hdisp, uint8_t data)
 {
   for(uint8_t i = 0; i < DISP_SEG_NO; i++)
     HAL_GPIO_WritePin(hdisp->Segment_Ports[i], hdisp->Segment_Pins[i], (data >> i) & 0x01);
@@ -101,7 +101,7 @@ void DISP_ROUTINE(DISP_HandleTypeDef* hdisp)
   
   /* DECIMAL POSITIVE NUMBERS: 0000-9999 */
   if(idx >= 0 && idx < DISP_DECIMALS_NO)
-    disp_write_byte(hdisp, DISP_COMMON_ANODE_DECIMALS[idx]);
+    disp_write_data(hdisp, DISP_COMMON_ANODE_DECIMALS[idx]);
   
   //else if(...) 
   /* text handling, 
@@ -111,7 +111,7 @@ void DISP_ROUTINE(DISP_HandleTypeDef* hdisp)
      
   /* EMPTY CHARACTER (BLANK) */
   else
-    disp_write_byte(hdisp, DISP_COMMON_ANODE_DECIMALS[DISP_EMPTY_CHAR]);
+    disp_write_data(hdisp, DISP_COMMON_ANODE_DECIMALS[DISP_EMPTY_CHAR]);
 
   // Decimal point control
   if(hdisp->DecimalPoint == dig)

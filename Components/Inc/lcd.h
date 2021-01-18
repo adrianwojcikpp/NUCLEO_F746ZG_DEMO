@@ -54,6 +54,7 @@ typedef struct {
 	LCD_PinType  E_Pin;
 	LCD_ModeTypeDef Mode;
 	LCD_TimerType Timer;
+	_Bool IsInitialized;
 } LCD_HandleTypeDef;
 
 /* Define --------------------------------------------------------------------*/
