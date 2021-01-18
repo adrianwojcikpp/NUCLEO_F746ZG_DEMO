@@ -200,8 +200,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-#if 1
-
 	/** Input reading **********************************************************************/
 
 	// Read analog inputs
@@ -224,7 +222,7 @@ int main(void)
 
 	// Loop delay
 	HAL_Delay(100);
-#endif
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

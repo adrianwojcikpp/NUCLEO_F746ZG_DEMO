@@ -103,14 +103,13 @@ void lcd_write_data(LCD_HandleTypeDef* hlcd, uint8_t data)
  */
 void lcd_write(LCD_HandleTypeDef* hlcd, uint8_t data, uint8_t len)
 {
-  for(uint8_t i = 0; i < len; i++)
-  {
-    HAL_GPIO_WritePin(hlcd->DATA_Ports[i], hlcd->DATA_Pins[i], (data >> i) & 0x01);
-  }
-
   HAL_GPIO_WritePin(hlcd->E_Port, hlcd->E_Pin, GPIO_PIN_SET);
-  __LCD_Delay(hlcd, 0.05);  // > 41 us
+
+  for(uint8_t i = 0; i < len; i++)
+    HAL_GPIO_WritePin(hlcd->DATA_Ports[i], hlcd->DATA_Pins[i], (data >> i) & 0x01);
+
   HAL_GPIO_WritePin(hlcd->E_Port, hlcd->E_Pin, GPIO_PIN_RESET); // Data receive on falling edge
+  __LCD_Delay(hlcd, 0.05);  // > 41 us
 }
 
 
