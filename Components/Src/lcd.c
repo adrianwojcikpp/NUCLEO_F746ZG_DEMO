@@ -68,7 +68,7 @@ void lcd_write_4bit_command(LCD_HandleTypeDef* hlcd, uint8_t data)
 {
   if(hlcd->Mode == LCD_4_BIT_MODE)
   {
-	HAL_GPIO_WritePin(hlcd->RS_Port, hlcd->RS_Pin, LCD_DATA_REG);     // Write to data register
+    HAL_GPIO_WritePin(hlcd->RS_Port, hlcd->RS_Pin, LCD_COMMAND_REG);    // Write to command register
     lcd_write(hlcd, data & 0x0F, LCD_NIB);
   }
 }
@@ -141,12 +141,12 @@ void LCD_Init(LCD_HandleTypeDef* hlcd)
   __LCD_Delay(hlcd, 15.2);              // >15 ms
   if(hlcd->Mode == LCD_4_BIT_MODE)
   {
-    lcd_write_4bit_command(hlcd, 0x03); // 0011
+    lcd_write_4bit_command(hlcd, 0x3); // 0011
     __LCD_Delay(hlcd, 4.2);             // > 4.1 ms
-    lcd_write_4bit_command(hlcd, 0x03); // 0011
+    lcd_write_4bit_command(hlcd, 0x3); // 0011
     __LCD_Delay(hlcd, 0.2);             // > 0.1 ms
-    lcd_write_4bit_command(hlcd, 0x03); // 0011
-    lcd_write_4bit_command(hlcd, 0x02); // 0010
+    lcd_write_4bit_command(hlcd, 0x3); // 0011
+    lcd_write_4bit_command(hlcd, 0x2); // 0010
 
     lcd_write_command(hlcd, LCD_FUNCTION_SET | LCD_OPT_N);
   }
@@ -165,7 +165,6 @@ void LCD_Init(LCD_HandleTypeDef* hlcd)
   __LCD_Delay(hlcd, 1.6);                                            // > 1.52 ms
   lcd_write_command(hlcd, LCD_DISPLAY_ON_OFF_CONTROL | LCD_OPT_D);   // LCD on, Cursor off, No blink
   lcd_write_command(hlcd, LCD_ENTRY_MODE_SET | LCD_OPT_INC);         // Cursor increment on
-
 }
 
 /**

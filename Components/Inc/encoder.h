@@ -27,6 +27,8 @@ typedef struct {
  uint32_t Counter;
  uint32_t CounterMax;
  uint32_t CounterMin;
+ _Bool CounterInc;
+ _Bool CounterDec;
 } ENC_HandleTypeDef;
 
 
@@ -44,6 +46,8 @@ typedef struct {
   int32_t CounterMax;
   int32_t CounterMin;
   int32_t CounterStep;
+  _Bool CounterInc;
+  _Bool CounterDec;
 } ENC_HandleTypeDef;
 
 #endif

@@ -35,12 +35,13 @@
 /* Public function -----------------------------------------------------------*/
 /**
  * @brief Start lamp controller timer.
- * @param[in] hlamp Lamp handler
  * @param[in] ang   Triac firing angle [degrees]
  * @return None
  */
-void LAMP_StartTimer(LAMP_HandleTypeDef* hlamp, float ang)
+void LAMP_StartTimer(LAMP_HandleTypeDef* hlamp)
 {
+  float ang = hlamp->TriacFiringAngle;
+
   if(ang > hlamp->TriacFiringAngleMax)
     ang = hlamp->TriacFiringAngleMax;
   else if(ang < hlamp->TriacFiringAngleMin)

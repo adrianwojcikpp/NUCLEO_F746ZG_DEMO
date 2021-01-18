@@ -44,10 +44,9 @@ typedef struct {
 /**
  * @brief Start lamp controller timer.
  * @param[in] hlamp Lamp handler
- * @param[in] ang   Triac firing angle [degrees]
  * @return None
  */
-void LAMP_StartTimer(LAMP_HandleTypeDef* hlamp, float ang);
+void LAMP_StartTimer(LAMP_HandleTypeDef* hlamp);
 
 /**
  * @brief Stop lamp controller timer.

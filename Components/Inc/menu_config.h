@@ -58,6 +58,24 @@ extern MenuItem_TypeDef menu_ain1;
 /* Analog input #2: potentiometer #2 */
 extern MenuItem_TypeDef menu_ain2;
 
+/* Dimmer board #1 */
+extern MenuItem_TypeDef menu_dimmer1;
+
+/* Digital light sensor #1: BH1750 (ADDR = 'L') */
+extern MenuItem_TypeDef menu_light1;
+
+/* Digital light sensor #2: BH1750 (ADDR = 'H') */
+extern MenuItem_TypeDef menu_light2;
+
+/* Digital temperature sensor #1: BMP280 (CS1) */
+extern MenuItem_TypeDef menu_temp1;
+
+/* Digital temperature sensor #2: BMP280 (CS2) */
+extern MenuItem_TypeDef menu_temp2;
+
+/* Temperature sensor #1 heater: PWM-controlled resistor */
+extern MenuItem_TypeDef menu_heater1;
+
 /* Public function prototypes ------------------------------------------------*/
 
 #endif /* INC_MENU_CONFIG_H_ */

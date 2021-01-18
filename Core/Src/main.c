@@ -55,14 +55,6 @@
 
 /* USER CODE BEGIN PV */
 
-// Rotary encoder
-int32_t enc_cnt = 0;
-int32_t enc_cnt_prev = 0;
-_Bool enc_inc = 0;
-_Bool enc_dec = 0;
-// Lamp controller
-float triac_firing_ang = 90;
-
 // ADC conversion results
 uint16_t adc_measurement[ADC_CHANNEL_NUMBER] = {0, 0};   // ADC register value
 uint32_t adc_voltage_mV[ADC_CHANNEL_NUMBER] = {0, 0};
@@ -98,7 +90,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
   /* Dimmer (LAMP) handling */
   else if(GPIO_Pin == hlamp1.SYNC_Pin)
-	LAMP_StartTimer(&hlamp1, triac_firing_ang);
+	LAMP_StartTimer(&hlamp1);
 }
 
 /**
@@ -196,9 +188,6 @@ int main(void)
   BH1750_Init(&hbh1750_2);
 
   /** Digital temperature and pressure sensors initialization: BMP280 with SPI bus *******/
-  struct bmp280_uncomp_data bmp280_1_data;
-  struct bmp280_uncomp_data bmp280_2_data;
-  int32_t temp;
   BMP280_Init(&bmp280_1);
   BMP280_Init(&bmp280_2);
 
@@ -219,10 +208,7 @@ int main(void)
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_measurement, ADC_CHANNEL_NUMBER);
 
 	// Read rotary encoder counter
-	enc_cnt = ENC_GetCounter(&henc1);
-	enc_inc = (enc_cnt > enc_cnt_prev);
-	enc_dec = (enc_cnt < enc_cnt_prev);
-	enc_cnt_prev = enc_cnt;
+	ENC_GetCounter(&henc1);
 
 	/** LCD menu ***************************************************************************/
 	MENU_ClearDisplayBuffer(menu_item);
@@ -231,7 +217,7 @@ int main(void)
 	LCD_SetCursor(&hlcd1, 0, 0);
 	LCD_printStr(&hlcd1, menu_item->display_str);
 	LCD_SetCursor(&hlcd1, 1, 0);
-	LCD_printf(&hlcd1, "ENC: %03d", enc_cnt);
+	LCD_printf(&hlcd1, "ENC: %03d", henc1.Counter);
 
 	/** Seven-segment display **************************************************************/
 	DISP_printDecUInt(&hdisp1, (int)adc_voltage_mV[ADC_POT2]);

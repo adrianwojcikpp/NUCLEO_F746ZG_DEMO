@@ -1,0 +1,2 @@
+menu.c:30:6:MENU_ClearDisplayBuffer	16	static
+menu.c:36:6:MENU_CallFunction	16	static

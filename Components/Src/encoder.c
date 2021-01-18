@@ -47,7 +47,10 @@ void ENC_Init(ENC_HandleTypeDef* henc)
  */
 uint32_t ENC_GetCounter(ENC_HandleTypeDef* henc)
 {
+  uint32_t cnt = henc->Counter;
   henc->Counter = henc->Timer->Instance->CNT;
+  henc->CounterInc = (henc->Counter > cnt);
+  henc->CounterDec = (henc->Counter < cnt);
   return henc->Counter;
 }
 
@@ -61,12 +64,13 @@ uint32_t ENC_GetCounter(ENC_HandleTypeDef* henc)
 int32_t ENC_UpdateCounter(ENC_HandleTypeDef* henc)
 {
   GPIO_PinState dt = HAL_GPIO_ReadPin(henc->DT_Port, henc->DT_Pin);
-  
+  uint32_t cnt = henc->Counter;
   if(dt == GPIO_PIN_RESET)
     henc->Counter = (henc->Counter >= henc->CounterMax) ? henc->CounterMax : (henc->Counter + henc->CounterStep);
   else
     henc->Counter = (henc->Counter <= henc->CounterMin) ? henc->CounterMin : (henc->Counter - henc->CounterStep);
-  
+  henc->CounterInc = (henc->Counter > cnt);
+  henc->CounterDec = (henc->Counter < cnt);
   return henc->Counter;
 }
 

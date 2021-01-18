@@ -32,6 +32,7 @@ ENC_HandleTypeDef henc1 = {
   .Timer = &htim4,
   .Counter  = 0,
   .CounterMax = 100, .CounterMin = 0,
+  .CounterInc = 0, .CounterDec = 0
 };
 
 #else
@@ -41,6 +42,7 @@ ENC_HandleTypeDef henc1 = {
   .DT_Port  = ENC_DT_GPIO_Port,  .DT_Pin  = ENC_DT_Pin,
   .Counter  = 50,
   .CounterMax = 100, .CounterMin = 0, .CounterStep = 1 
+  .CounterInc = 0, .CounterDec = 0
 };
 
 #endif
