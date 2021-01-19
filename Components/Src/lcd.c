@@ -234,11 +234,11 @@ void LCD_Clear(LCD_HandleTypeDef* hlcd) {
  * @param[in] bitmap Defined character array @see HD44780 technical note.
  * @return None 
  */
-void LCD_DefineChar(LCD_HandleTypeDef* lcd, uint8_t code, uint8_t bitmap[]){
-  lcd_write_command(lcd, LCD_SETCGRAM_ADDR + (code << 3));
+void LCD_DefineChar(LCD_HandleTypeDef* hlcd, uint8_t code, uint8_t bitmap[]){
+  lcd_write_command(hlcd, LCD_SETCGRAM_ADDR + (code << 3));
   
   for(uint8_t i=0; i < 8; ++i)
-    lcd_write_data(lcd, bitmap[i]);
+    lcd_write_data(hlcd, bitmap[i]);
 }
 
 #ifdef LCD_PRINTF_ENABLE
@@ -249,13 +249,13 @@ void LCD_DefineChar(LCD_HandleTypeDef* lcd, uint8_t code, uint8_t bitmap[]){
  * @param[in] ...    Variadic arguments
  * @return None
  */
-void LCD_printf(LCD_HandleTypeDef * lcd, const char* format, ...)
+void LCD_printf(LCD_HandleTypeDef* hlcd, const char* format, ...)
 {
   char buffer[LCD_PRINTF_BUF_SIZE];
   va_list args;
   va_start(args, format);
   vsprintf(buffer,format, args);
-  LCD_printStr(lcd, buffer);
+  LCD_printStr(hlcd, buffer);
   va_end(args);
 }
 #endif
